@@ -29,10 +29,36 @@ export function signoutUser() {
   }
 }
 
+export function signUpUser({email, password}) {
+  return (dispatch) => {
+    axios.post(`${API}/signup`, {email, password})
+      .then(response => {
+        dispatch({type: AUTH_USER})
+        localStorage.setItem('token', response.data.token)
+        browserHistory.push('/feature')
+      })
+      .catch(()=> {
+        dispatch(authError('Bad Login Info'))
+      })
+  }
+}
+
 export function authError(error) {
   console.log(error)
   return {
     type: AUTH_ERROR,
     payload: error
+  }
+}
+
+export function fetchMessage() {
+  console.log(localStorage.getItem('token'))
+  return function(dispatch) {
+    axios.get(API, {
+      headers: { authorization: localStorage.getItem('token')}
+    })
+      .then((response) => {
+        console.log(data)
+      })
   }
 }

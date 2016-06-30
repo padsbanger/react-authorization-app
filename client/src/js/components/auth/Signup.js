@@ -8,6 +8,10 @@ class Signup extends Component {
     super(props)
   }
 
+  handleFormSubmit(formProps) {
+    this.props.signUpUser(formProps)
+  }
+
   componenWillMount() {
     this.props.signoutUser()
   }
@@ -17,10 +21,11 @@ class Signup extends Component {
       email, password, passwordConfirm
     }} = this.props
     return  (
-      <form>
+      <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
         <fieldset className="form-group">
           <label>Email: </label>
           <input className="form-control" {...email}/>
+          {email.touched && email.error}
         </fieldset>
         <fieldset className="form-group">
           <label>Password: </label>
@@ -40,6 +45,10 @@ class Signup extends Component {
 function validate(formProps) {
   const errors = {}
 
+  if(!formProps.email) {
+    errors.email = 'Please enter a email'
+  }
+
   if(formProps.password !== formProps.passwordConfirm) {
     errors.password = 'Passwords must match'
   }
@@ -51,4 +60,4 @@ export default reduxForm({
   form: 'signup',
   fields: ['email', 'password', 'passwordConfirm'],
   validate
-})(Signup)
+}, null, actions)(Signup)
